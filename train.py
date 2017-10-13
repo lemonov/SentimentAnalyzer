@@ -5,6 +5,7 @@ import os
 
 
 def initialize():
+    print("initialize")
     X, T = get_data()
     T = T.astype(float)
     W = np.random.randn(X.shape[1], 1)
@@ -38,6 +39,7 @@ def cross_entropy(T, Y):
 
 
 def train():
+    print("train")
     X, T, W, b = initialize()
 
     Y = forward(X, W, b)
@@ -50,7 +52,7 @@ def train():
     for i in range(0, 1000, 1):
         print("Epoch: " + str(i))
         Y = forward(X, W, b)
-        delta = X.T.dot(T - Y) - lambda_l2 * W - lambda_l1 * np.sign(W) # elastic net
+        delta = X.T.dot(T - Y) - lambda_l2 * W - lambda_l1 * np.sign(W)  # elastic net
         b = b + learning_rate * (T - Y).sum()
         bias_list.append(b)
         W = W + learning_rate * delta
@@ -65,7 +67,6 @@ def train():
     print(W.shape)
     print(X.shape)
 
-
     if not os.path.exists("results"):
         os.makedirs("results")
     np.savetxt("results/best_weights.csv", W, delimiter=',')
@@ -78,5 +79,3 @@ def train():
 
     print(classification_rate(np.round(T), Y))
 
-
-# train()

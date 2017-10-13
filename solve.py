@@ -4,6 +4,7 @@ from preprocess import load_data_set, get_encoder, filter_string
 from train import forward
 import numpy as np
 
+
 def load_weights():
     W = pd.read_csv("results/best_weights.csv", header=None)
     W = W.as_matrix()
@@ -17,7 +18,6 @@ def load_bias():
 
 
 def encoder():
-    print(load_data_set()[0].shape)
     return get_encoder(load_data_set()[0])
 
 
@@ -34,15 +34,33 @@ def get_sentiment(word):
     x = get_encoded_data(word, enc)
     sentiment = forward(x, W, bias)
     print(sentiment)
-    return round(sentiment[0][0])
+    return sentiment[0][0]
 
 
-W = load_weights()
-bias = load_bias()
-enc = encoder()
+def resolve_sentiment(sentiment):
+    result = "Neutral"
+    if sentiment < 0.3:
+        result = "Negative"
 
-while True:
-    print("Paste comment")
-    string = input()
-    result = get_sentiment(string)
-    print("Negative" if result == 0 else "Positive")
+    if sentiment > 0.7:
+        result = "Positive",
+    return result
+
+from tools import serialize, deserialize
+
+
+def start_solver():
+    global W, bias, enc
+    W = load_weights()
+    bias = load_bias()
+    enc = deserialize("encoder")
+    # enc = encoder()
+    while True:
+        print("Paste comment")
+        string = input()
+        result = get_sentiment(string)
+
+        print(resolve_sentiment(result))
+
+
+
